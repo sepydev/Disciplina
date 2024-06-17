@@ -9,8 +9,8 @@ from menu import Menu
 
 
 def start(config):
-    work_hours = int(input("Enter the number of hours you want to work: "))
-    total_seconds = work_hours * 3600
+    work_hours = float(input("Enter the number of hours you want to work: "))
+    total_seconds = int(work_hours * 3600)
     config['total_seconds'] = total_seconds
     config['total_time_elapsed'] = 0
     config['periods'] = total_seconds // (WORK_PERIOD + REST_PERIOD)
