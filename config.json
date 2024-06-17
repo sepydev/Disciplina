@@ -1,0 +1,13 @@
+{
+    "lunch_time": "13:00",
+    "lunch_duration": 30,
+    "check_internet": true,
+    "check_proxy": true,
+    "idle_alert": true,
+    "idle_alert_level_1": 90,
+    "idle_alert_level_2": 0,
+    "total_seconds": 0,
+    "total_time_elapsed": 39,
+    "periods": 5,
+    "period_type": "work"
+}
