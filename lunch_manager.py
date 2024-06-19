@@ -50,7 +50,7 @@ def postpone_lunch(config):
     save_config(config)
 
 
-def check_end_of_lunch_time(config, processes):
+def check_end_of_lunch_time(config):
     lunch_time = datetime.strptime(config['lunch_time'], "%H:%M")
     end_lunch = (lunch_time + timedelta(minutes=config["lunch_duration"])).strftime("%H:%M")
     while True:
@@ -62,14 +62,17 @@ def check_end_of_lunch_time(config, processes):
         print(
             f"\rLunch duration: {config['lunch_duration']} minutes | End lunch time: {end_lunch} | Current time: {datetime.now().strftime('%H:%M:%S')}",
             end="")
-    Menu().pause_menu(config, processes)
+    Menu().pause_menu(config)
 
 
-def lunch_checker(config, processes):
+def lunch_checker(config, inactivity_process):
     if config['lunch_time'] and is_lunch_time(config['lunch_time']):
         play_sound('LUNCH_MESSAGE')
 
         if lunch_notification_menu():
-            check_end_of_lunch_time(config, processes)
+            if inactivity_process:
+                inactivity_process.terminate()
+            check_end_of_lunch_time(config)
         else:
             postpone_lunch(config)
+

@@ -29,9 +29,8 @@ def work_timer(config):
     periods = config['periods']
     period_type = config['period_type']
 
-    process = Process(target=start_monitoring, kwargs={'config': config})
-    process.start()
-    processes = [process, ]
+
+    inactivity_process = None
 
     try:
         while total_seconds > 0:
@@ -40,8 +39,13 @@ def work_timer(config):
 
             if period_type == "work":
                 play_sound('START_WORK_MESSAGE')  # Play start work sound
+                inactivity_process = Process(target=start_monitoring, kwargs={'config': config})
+                inactivity_process.start()
+
             else:
                 play_sound('START_REST_MESSAGE')  # Play start rest sound
+                if inactivity_process:
+                    inactivity_process.terminate()
 
             while period_elapsed < period_time and total_seconds > 0:
                 time.sleep(1)
@@ -53,7 +57,7 @@ def work_timer(config):
                 period_time_str = format_time(period_elapsed)
                 period_left_str = format_time(period_time - period_elapsed)
                 print(
-                    f"\rTotal time: {total_time_str} | Period timer: {period_time_str} | Left: {period_left_str} | Period type: {period_type} | Periods left: {periods}",
+                    f"\rTotal time: {total_time_str} | Period timer: {period_time_str} | Left: {period_left_str} | Period type: {period_type}",
                     end="")
 
                 config['total_seconds'] = total_seconds
@@ -62,7 +66,7 @@ def work_timer(config):
                 config['period_type'] = period_type
                 save_config(config)
 
-                lunch_checker(config, processes)
+                lunch_checker(config, inactivity_process)
 
             periods -= 1
             period_type = "rest" if period_type == "work" else "work"
@@ -73,7 +77,9 @@ def work_timer(config):
 
     except KeyboardInterrupt:
         print("\nTimer paused.")
-        Menu().pause_menu(config, processes)
+        if inactivity_process:
+            inactivity_process.terminate()
+        Menu().pause_menu(config)
 
 
 def format_time(seconds):

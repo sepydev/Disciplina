@@ -27,10 +27,7 @@ class Menu:
                 print("Invalid choice. Please try again.")
 
 
-    def pause_menu(self, config, processes):
-        for process in processes:
-            process.terminate()
-        from work_timer import resume
+    def pause_menu(self, config):
         while True:
             print("\nPause Menu")
             print("[1] Resume")
